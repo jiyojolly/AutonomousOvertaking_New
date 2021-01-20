@@ -17,7 +17,7 @@ and execute the same without collisions with other nearby vehicles.
 
 ## Project Structure
 ```bash
-├───Functions     // All MATLAB functions that are used for for plannign and control scheme 
+├───Functions     // All MATLAB functions that are used for planning and control scheme 
 ├───refs    // All referenced Vehicle dynamics models
 ├───Scenario_definitions  // All definition files that describe different overtaking scenarios, postions of other actors, lane configurations etc.
 ├───Scripts    // Folder containing the scripts that initialse parameters and necessary structures in the base workspace.
