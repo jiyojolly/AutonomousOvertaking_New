@@ -1,7 +1,5 @@
-function [outputArg1,outputArg2] = untitled(inputArg1,inputArg2)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+function [position,isterminal,direction] = vzeroReached(~,x,~)
+    position = x(4); % The value that we want to be zero
+    isterminal = 1;  % Halt integration 
+    direction = 0;   % The zero can be approached from either direction
 end
-
