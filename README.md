@@ -16,15 +16,19 @@ planning and control paradigm was able to select the best course of action (mane
 and execute the same without collisions with other nearby vehicles.
 
 ## Project Structure
-- Functions     // All MATLAB functions that are used for for plannign and control scheme 
-- Scenario_definitions  // All definition files that describe different overtaking scenarios, postions of other actors, lane configurations etc.
-- Scripts      // Folder containing the scripts that initialse parameters and necessary structures in the base workspace.
-  -- init_mpc.m  // Contains parameters pertaining to MPC formulation. 
-  -- initAll.m   // Vehicle model and other related parameters
-- System       // Containing Main model files.
-   -- Overtaking_Integrated.slx  // Main Simulink model file
-   
+```bash
+├───Functions     // All MATLAB functions that are used for for plannign and control scheme 
+├───refs    // All referenced Vehicle dynamics models
+├───Scenario_definitions  // All definition files that describe different overtaking scenarios, postions of other actors, lane configurations etc.
+├───Scripts    // Folder containing the scripts that initialse parameters and necessary structures in the base workspace.
+    ├───init_mpc.m  // Contains parameters pertaining to MPC formulation. 
+    └───initAll.m   // Vehicle model and other related parameters
+├───System   // Containing Main model files.
+    └───Overtaking_Integrated.slx  // Main Simulink model file
+└───Work
+```   
  ##
+ 
   
 
 
