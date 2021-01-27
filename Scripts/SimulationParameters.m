@@ -34,3 +34,6 @@ npcVehDims = vehicleDimensions(npcVehLength,npcVehWidth,npcVehHeight, ...
 dt = .05;
 tf = 1;
 v_des = 15.0;
+
+%% For Plotting
+plotSampleTime = 0.5;
