@@ -41,7 +41,7 @@ mpc_planner.ManipulatedVariables(1).RateMax = 0.5;
 %Weights
 mpc_planner.Weights.OutputVariables = [10 10 2 5];
 
-createParameterBus(mpc_planner,['MPC_Planner_Controller/MPC/Nonlinear MPC Controller'],'params',{ellip_coeff});
+createParameterBus(mpc_planner,['Controller/MPC/Nonlinear MPC Controller'],'params',{ellip_coeff});
 x0 = [2 0 -pi/2 0.3];
 u0 = [0.4 0.0];
 validateFcns(mpc_planner, x0, u0, [], {ellip_coeff});

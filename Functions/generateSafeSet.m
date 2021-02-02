@@ -1,15 +1,17 @@
-function [safeSet,safeRiskMap] = generateSafeSet(vehPgons,lanes)
+function [safeSet,safeRiskMap] = generateSafeSet(vehPgons,lanes, XSenseRange, YSenseRange, SenseResolution, XSenseRangeArrSize, YSenseRangeArrSize, RiskMaxValue, RiskValueThreshold, eetaRoad)
 
-x = -20:0.1:20;
-y = -20:0.1:20;
-
+x = -XSenseRange:SenseResolution:XSenseRange;
+y = YSenseRange:-SenseResolution:-YSenseRange;
 [X,Y] = meshgrid(x,y);
-vehSafeSet = getVehPotential(X, Y, vehPgons);
-roadSafeSet = getRoadPotential(X, Y, lanes, 5);
-safeRiskMap = vehSafeSet + roadSafeSet;
-safeRiskMap(safeRiskMap>100) = 100;
+vehRiskMap = zeros(XSenseRangeArrSize,YSenseRangeArrSize);
+roadRiskMap = zeros(XSenseRangeArrSize,YSenseRangeArrSize);
+
+vehRiskMap = getVehPotential(X, Y, vehPgons);
+roadRiskMap = getRoadPotential(X, Y, lanes, eetaRoad);
+safeRiskMap = vehRiskMap + roadRiskMap;
+safeRiskMap(safeRiskMap>RiskMaxValue) = RiskMaxValue;
 
 %Mask Values below threshold
-safeMask = safeRiskMap < 10;
+safeMask = safeRiskMap < RiskValueThreshold;
 safeSet = [X(safeMask), Y(safeMask)];
 end

@@ -3,7 +3,7 @@ function U_road = getRoadPotential(X, Y, lanes, eetaRoad)
 %   Detailed explanation goes here
 
 U_road = zeros(size(X));
-for i = [1 7]
+for i = [1 4 7]
     lane1X = lanes(i).Coordinates(:,1);
     %     lane1X_scaled = lane1X - (max(lane1X) - 20);
     lane1X_scaled = (((lane1X-min(lane1X))/(max(lane1X)-min(lane1X)))*40)-20;
@@ -19,5 +19,6 @@ for i = [1 7]
     end
     U_road(mask1) = 100;
     
+end
 end
 
