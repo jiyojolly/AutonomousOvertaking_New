@@ -2,12 +2,12 @@ clear;
 clc;
 clf;
 close all;
-init_mpc;
-load('simdata/2020-12-21 01:00:58_sim_out');
+SimulationParameters;
+load('SimOutputs/2021_2_8_23_53_30_sim_out');
 start_time_idx = 20;
 
 %Reference state data
-Pdes_timeseries = timeseries(out.P_des.Data(start_time_idx:end,1:2),...
+Pdes_timeseries = timeseries(logsout.P_des.Data(start_time_idx:end,1:2),...
                       out.P_des.Time(start_time_idx:end));
 %Reference state data
 x_ref_timeseries = timeseries(out.x_ref_curr.Data(start_time_idx:end,1:2),...

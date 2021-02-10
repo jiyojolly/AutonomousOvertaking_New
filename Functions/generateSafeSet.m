@@ -1,7 +1,7 @@
 function [safeSet,safeRiskMap] = generateSafeSet(vehPgons,lanes, XSenseRange, YSenseRange, SenseResolution, XSenseRangeArrSize, YSenseRangeArrSize, RiskMaxValue, RiskValueThreshold, eetaRoad)
 
 x = -XSenseRange:SenseResolution:XSenseRange;
-y = YSenseRange:-SenseResolution:-YSenseRange;
+y = -YSenseRange:SenseResolution:YSenseRange;
 [X,Y] = meshgrid(x,y);
 vehRiskMap = zeros(XSenseRangeArrSize,YSenseRangeArrSize);
 roadRiskMap = zeros(XSenseRangeArrSize,YSenseRangeArrSize);

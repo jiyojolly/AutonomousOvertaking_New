@@ -2,6 +2,7 @@ clf;
 hold on;
 SimulationParameters;
 StructureDefs;
+load("SimDataDump.mat");
 %%
 % Generate mesh grid
 x = -20:0.1:20;
@@ -25,11 +26,12 @@ for i = 1:length(laneDump)
     plot(lanes(i).Coordinates(:,1), lanes(i).Coordinates(:,2))
 end
 %Generate Safe set
-[safeSet, safeRiskMap] = generateSafeSet(vehPgons,lanes);
-
+[safeSet, safeRiskMap] = generateSafeSet(vehPgons,lanes, XSenseRange, YSenseRange, SenseResolution, XSenseRangeArrSize, YSenseRangeArrSize, RiskMaxValue, RiskValueThreshold, eetaRoad);
+X(lanes(i).Coordinates(:,1),lanes(i).Coordinates(:,2)) = 0;
 %Generate Reachable Set
 x0 = [0 0 0 5];
-reachableSet = generateReachableSet(x0, tf, amin, amax, delta_min, delta_max, v_des, L, l_F);
+reachableSet = generateReachableSet(tf, egoAccMin, egoAccMax, egoSteerAngMin, egoSteerAngMax, v_des, L, l_F,ReachableSetCurveResolution,...
+                                                x0);
 
 %Generate SR Set
 SRSet = generateSRSet(safeSet,reachableSet);
@@ -45,3 +47,12 @@ plot(polyshape([-2 -2 2 2],[-1 1 1 -1]));
 % plot npc vehicles
 plot(polyshape(vehPgons.VehPgon(1).X,vehPgons.VehPgon(1).Y), 'FaceColor', 'none');plot(polyshape(vehPgons.VehPgon(2).X,vehPgons.VehPgon(2).Y), 'FaceColor', 'none');
 plot(polyshape(reachableSet));
+
+%% Get intermediate ref point
+npcVeh.X = 10; npcVeh.Y = 15;
+%plot final ref point 
+plot(npcVeh.X, npcVeh.Y, 'x');
+
+[maxDistLocationValue, maxDistLocationIndex]  = min(vecnorm(SRSet-[npcVeh.X, npcVeh.Y],2,2));
+plot(SRSet(maxDistLocationIndex,1), SRSet(maxDistLocationIndex,2),'x')
+

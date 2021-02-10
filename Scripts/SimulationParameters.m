@@ -14,6 +14,9 @@ egoVehicleDims = vehicleDimensions(egoVehLength,egoVehWidth,egoVehHeight, ...
 % Wheelbase 
 L = 3.705;
 l_F = 1.2525;
+%Steering Parameters
+egoSteeringRatio = 18;
+egoMaxSteeringWheelAng = 3*pi;
 % Engine paramters
 egoAccMin = -10.0;  % m/s^2
 egoAccMax = 5.0;    % m/s^2
@@ -43,18 +46,18 @@ ReachableSetCurveResolution = 0.1;
 %% Controller parameters 
 dt = .05;
 tf = 1;
-v_des =15; %m/s %30km\h
+v_des = 8; %m/s %30km\h
 controllerSampleTime = 0.1;
 t=0;
  %MPC Parameters
 T_horizon = 1;
 PredHor = T_horizon/controllerSampleTime;
-CntrlHor = 2;
+CntrlHor = PredHor;
 nx = 4; ny = 4; nu = 2;
 enable_MPC = 0;
 obstcl_ellip_order = 6;
 ellip_coeff = [2 2 2 2 2 obstcl_ellip_order];
-inflation_factor = 1.2;
+inflation_factor = 1.0;
 
 x = [0 1 2 3];
 mv = [1 1];
@@ -75,12 +78,12 @@ mpc_planner.ManipulatedVariables(2).Min = egoSteerAngMin;
 mpc_planner.ManipulatedVariables(1).Max = egoAccMax;
 mpc_planner.ManipulatedVariables(2).Max = egoSteerAngMax;
   %Rate Limits
-mpc_planner.ManipulatedVariables(1).RateMin = -0.9;
-mpc_planner.ManipulatedVariables(1).RateMax = 0.9;
-mpc_planner.ManipulatedVariables(1).RateMin = -0.5;
-mpc_planner.ManipulatedVariables(1).RateMax = 0.5;
+mpc_planner.ManipulatedVariables(1).RateMin = -5.0*(controllerSampleTime^1);
+mpc_planner.ManipulatedVariables(1).RateMax = 5.0*(controllerSampleTime^1);
+mpc_planner.ManipulatedVariables(2).RateMin = -1.5*(controllerSampleTime^1);
+mpc_planner.ManipulatedVariables(2).RateMax = 1.5*(controllerSampleTime^1);
 %Weights
-mpc_planner.Weights.OutputVariables = [10 10 0 0];
+mpc_planner.Weights.OutputVariables = [repmat([0 0 0 5],PredHor/2, 1); repmat([0 0 0 5],round(PredHor/4-1), 1);repmat([10 10 5 5],round(PredHor/4-1), 1); 50 50 5 10];
 
 createParameterBus(mpc_planner,['Controller/Control/MPC/Nonlinear MPC Controller'],'MPCparams',{ellip_coeff});
 x0 = [2 0 -pi/2 0.3];

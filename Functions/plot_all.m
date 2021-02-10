@@ -1,14 +1,18 @@
 function plot_all(XSenseRange, YSenseRange, SenseResolution,egoVehLength, egoVehWidth,...
-                  VehFdbk_ISO, ActorsEgo, Lanes, npcVehPgons, safeSetEgo, safeRiskMapEgo, reachableSetEgo, SRSetEgo, XPredictedWorld, XmpcRefWorld)
+    VehFdbk_ISO, ActorsEgo, Lanes, npcVehPgons, safeSetEgo, safeRiskMapEgo, reachableSetEgo, SRSetEgo, XPredictedWorld,XmpcRefWorld, MVPredictedWorld, ReferenceGoal, ellip_coeff)
 %PLOT_ALL Summary of this function goes here
 %   Detailed explanation goes here
 figure(1);
 clf;
 hold on;
+%% Print to diagonostic
+
+% MVPredictedWorld
+% XPredictedWorld
 %% Plot Sets
 
 % Plot Safe Set
-plot(safeSetEgo(:,1), safeSetEgo(:,2), '.', 'Color', '#ffffed');
+plot(safeSetEgo(:,1), safeSetEgo(:,2), '.', 'Color', 'red');
 
 % Plot Reachable Set
 pg = plot(polyshape(reachableSetEgo));
@@ -40,22 +44,31 @@ for i = 1:npcVehPgons.NumVeh
     pg2.FaceColor = 'none';
 end
 
+n=ellip_coeff(6);
+a = ellip_coeff(1) ; b = ellip_coeff(2); xe = ellip_coeff(3); ye = ellip_coeff(4); phi = ellip_coeff(5);
+ellip = @(x,y) ((((x-xe).*cos(phi) - (y-ye).*sin(phi)))./a).^n + ((((x-xe).*sin(phi) + (y-ye).*cos(phi)))./b).^n - 1;
+fimplicit(ellip)
+
 %% Plot Planning related stuff
-    inputPose.X = XmpcRefWorld(1);inputPose.Y = XmpcRefWorld(2);inputPose.Z = 0.0;
-    outputPose = transformEgo(inputPose, VehFdbk_ISO.Position_ISO, VehFdbk_ISO.Orientation_ISO, 0);
-    plot(outputPose.X,outputPose.Y,'x')
-%Plot MPC predicted path      
+% Plot final reference goal
+plot(ReferenceGoal.X,ReferenceGoal.Y,'o')
+% Plot interim MPC reference point
+inputPose.X = XmpcRefWorld(1);inputPose.Y = XmpcRefWorld(2);inputPose.Z = 0.0;
+% Transform to Ego frame
+outputPose = transformEgo(inputPose, VehFdbk_ISO.Position, VehFdbk_ISO.Orientation, 0);
+plot(outputPose.X,outputPose.Y,'x')
+%Plot MPC predicted path
 %     if ~isscalar(obstcl) && nnz(x_pred) ~= 0
 for i = 1:size(XPredictedWorld, 1)
     inputPose.X = XPredictedWorld(i,1);inputPose.Y = XPredictedWorld(i,2);inputPose.Z = XPredictedWorld(i,3);
-    outputPose = transformEgo(inputPose, VehFdbk_ISO.Position_ISO, VehFdbk_ISO.Orientation_ISO, 0);
+    outputPose = transformEgo(inputPose, VehFdbk_ISO.Position, VehFdbk_ISO.Orientation, 0);
     scatter(outputPose.X,outputPose.Y,'filled')
 end
 %% Set Figure
 axis auto;
 axis([-XSenseRange*2,XSenseRange*2,-YSenseRange,YSenseRange]);
 
-% %% Plot 3d Map
+%% Plot 3d Map
 % hold off;
 % figure(2);
 % clf;

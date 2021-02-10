@@ -11,6 +11,6 @@ function cineq = constraint_obstcl_avoid(X,U,e,data, ellip_coeff)
         x1 = X(2:p+1,1);
         y1 = X(2:p+1,2);
 
-        cineq = [-(ellip(x1,y1));]
+        cineq = [-(ellip(x1,y1));];
     end
 end
