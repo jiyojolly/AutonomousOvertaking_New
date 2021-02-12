@@ -12,7 +12,7 @@ hold on;
 %% Plot Sets
 
 % Plot Safe Set
-plot(safeSetEgo(:,1), safeSetEgo(:,2), '.', 'Color', 'red');
+plot(safeSetEgo(:,1), safeSetEgo(:,2), '.', 'Color', '#FFFFE0');
 
 % Plot Reachable Set
 pg = plot(polyshape(reachableSetEgo));
@@ -66,7 +66,7 @@ for i = 1:size(XPredictedWorld, 1)
 end
 %% Set Figure
 axis auto;
-axis([-XSenseRange*2,XSenseRange*2,-YSenseRange,YSenseRange]);
+axis([-XSenseRange,XSenseRange,-YSenseRange/2,YSenseRange]);
 
 %% Plot 3d Map
 % hold off;

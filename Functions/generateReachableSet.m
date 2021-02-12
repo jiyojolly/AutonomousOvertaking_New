@@ -3,7 +3,8 @@ function reachableSet = generateReachableSet(tf, egoAccMin, egoAccMax, egoSteerA
 %GENERATEREACHABLESET Summary of this function goes here
 %   Detailed explanation goes here
 
-x0 = [0 0 0 XFdbk(4)];
+% x0 = [0 0 0 XFdbk(4)];
+x0 = [0 0 0 0];
 relaxMinAccLimits = 0.5;
 relaxMinVelLimits = 0.5;
 opts = odeset('RelTol',1e-2,'AbsTol',1e-4, 'Events', @(t,x) vdesReached(t,x,v_des));
