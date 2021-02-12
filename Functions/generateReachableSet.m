@@ -3,8 +3,9 @@ function reachableSet = generateReachableSet(tf, egoAccMin, egoAccMax, egoSteerA
 %GENERATEREACHABLESET Summary of this function goes here
 %   Detailed explanation goes here
 
-% x0 = [0 0 0 XFdbk(4)];
+x0StoppingDist = [0 0 0 XFdbk(4)];
 x0 = [0 0 0 0];
+x0StoppingDist = x0;
 relaxMinAccLimits = 0.5;
 relaxMinVelLimits = 0.5;
 opts = odeset('RelTol',1e-2,'AbsTol',1e-4, 'Events', @(t,x) vdesReached(t,x,v_des));
@@ -14,7 +15,10 @@ delta_range = egoSteerAngMax:-ReachableSetCurveResolution:egoSteerAngMin;
 yi = zeros(length(delta_range),4);
 yibrake = zeros(length(delta_range),4);
 
-if x0(4) < 0
+% velocityCheck = XFdbk(4);
+velocityCheck = 0;
+
+if velocityCheck < 0
     x0 = [0 0 0 0];
     [~,y2,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax egoSteerAngMin],L,l_F),[0 tf], x0, opts);
     [~,y3,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax egoSteerAngMax],L,l_F),[0 tf], x0, opts);
@@ -24,7 +28,7 @@ if x0(4) < 0
     end
     %     plot(yi(:,1),yi(:,2), 'o');
     pgon = polyshape([y3(:,1)' yi(:,1)' y2(end:-1:1,1)'],[y3(:,2)' yi(:,2)' y2(end:-1:1,2)']);
-elseif x0(4) == 0
+elseif velocityCheck == 0
     [~,y2,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax egoSteerAngMin],L,l_F),[0 tf], x0, opts);
     [~,y3,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax egoSteerAngMax],L,l_F),[0 tf], x0, opts);
     for i = 1: length(delta_range)
@@ -33,15 +37,15 @@ elseif x0(4) == 0
     end
     %     plot(yi(:,1),yi(:,2), 'o');
     pgon = polyshape([y3(:,1)' yi(:,1)' y2(end:-1:1,1)'],[y3(:,2)' yi(:,2)' y2(end:-1:1,2)']);
-elseif x0(4) > 0 && x0(4) < v_des
+elseif velocityCheck > 0 && velocityCheck < v_des
     [~,y2,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax egoSteerAngMin],L,l_F),[0 tf], x0, opts);
     [~,y3,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax egoSteerAngMax],L,l_F),[0 tf], x0, opts);
-    [~,y2brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMin],L,l_F),[0 tf], x0, opts);
-    [~,y3brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMax],L,l_F),[0 tf], x0, opts);
+    [~,y2brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMin],L,l_F),[0 tf], x0StoppingDist, opts);
+    [~,y3brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMax],L,l_F),[0 tf], x0StoppingDist, opts);
     for i = 1: length(delta_range)
         [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMax delta_range(i)],L,l_F),[0 tf], x0, opts);
         yi(i,:) = y(end,:);
-        [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin delta_range(i)],L,l_F),[0 tf], x0, opts);
+        [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin delta_range(i)],L,l_F),[0 tf], x0StoppingDist, opts);
         yibrake(i,:) = y(end,:);
     end
     %        plot(yi(:,1),yi(:,2), 'o');
@@ -70,14 +74,14 @@ elseif x0(4) > 0 && x0(4) < v_des
     end
     
 else
-    [~,y2,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin+relaxMinAccLimits egoSteerAngMin],L,l_F),[0 tf], x0, optsExceedVdes);
-    [~,y3,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin+relaxMinAccLimits egoSteerAngMax],L,l_F),[0 tf], x0, optsExceedVdes);
-    [~,y2brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMin],L,l_F),[0 tf], x0, optsExceedVdes);
-    [~,y3brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMax],L,l_F),[0 tf], x0, optsExceedVdes);
+    [~,y2,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin+relaxMinAccLimits egoSteerAngMin],L,l_F),[0 tf], x0StoppingDist, optsExceedVdes);
+    [~,y3,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin+relaxMinAccLimits egoSteerAngMax],L,l_F),[0 tf], x0StoppingDist, optsExceedVdes);
+    [~,y2brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMin],L,l_F),[0 tf], x0StoppingDist, optsExceedVdes);
+    [~,y3brake,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin egoSteerAngMax],L,l_F),[0 tf], x0StoppingDist, optsExceedVdes);
     for i = 1: length(delta_range)
-        [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin+relaxMinAccLimits delta_range(i)],L,l_F),[0 tf], x0, optsExceedVdes);
+        [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin+relaxMinAccLimits delta_range(i)],L,l_F),[0 tf], x0StoppingDist, optsExceedVdes);
         yi(i,:) = y(end,:);
-        [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin delta_range(i)],L,l_F),[0 tf], x0, optsExceedVdes);
+        [~,y,~,~,~] = ode45(@(t,x) vkinematicmodel_bicycle(t,x,[egoAccMin delta_range(i)],L,l_F),[0 tf], x0StoppingDist, optsExceedVdes);
         yibrake(i,:) = y(end,:);
     end
     %        plot(yi(:,1),yi(:,2), 'o');
@@ -90,7 +94,7 @@ else
     
 end
 
-reachableSet = pgon.Vertices;
+reachableSet = pgon.Vertices
 
 end
 

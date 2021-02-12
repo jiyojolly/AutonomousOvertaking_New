@@ -84,7 +84,7 @@ mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],PredHor/2, 1);
                                        repmat([10 10 0 0],round(PredHor/4-1), 1);...
                                        repmat([15 15 0 0],round(PredHor/4-1), 1);...
                                        50 50 5 10];
-% mpc_planner.Weights.OutputVariables = [repmat([0 0 0 5],4, 1); 
+% mpc_planner.Weights.OutputVariables = [repmat([5 5 0 10],4, 1); 
 %                                        [20 20 5 5]];
 
 ellipCoeffValidateFcns = [2 2 2 2 2 obstcl_ellip_order];
