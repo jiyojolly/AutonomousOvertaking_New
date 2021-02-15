@@ -86,12 +86,12 @@ mpc_planner.ManipulatedVariables(2).Max = egoSteerAngMax;
 mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],PredHor/2, 1);
                                        repmat([5 10 0 5],round(PredHor/4)-1, 1);...
                                        repmat([10 10 10 10],round(PredHor/4)-1, 1);...
-                                       50 50 50 10];
+                                       10 50 50 30];
 % mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],2, 1);
 %                                        repmat([5 10 0 10],2, 1);
 %                                        [50 50 50 10]];
 
-mpc_planner.Weights.ManipulatedVariables = [10 50];
+mpc_planner.Weights.ManipulatedVariables = [5 50];
   
 
 ellipCoeffValidateFcns = [2 2 2 2 2 obstcl_ellip_order];
