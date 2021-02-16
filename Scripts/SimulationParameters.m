@@ -56,7 +56,7 @@ distSafeLaneKeep = 10;
 abortTrigger = 0;
 dt = .05;
 tf = 2.0;
-v_des = 8; %m/s %30km\h
+v_des = 15; %m/s %30km\h
 controllerSampleTime = 0.1;
 t=0;
 %MPC Parameters
