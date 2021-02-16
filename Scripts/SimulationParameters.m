@@ -1,4 +1,4 @@
-%%%%%%% Ego Car parameters %%%%%%%%
+%% Ego Car parameters %%%%%%%%
 clear;
 clc;
 egoVehcenterToFront = 1.491;
@@ -19,7 +19,7 @@ l_F = 1.2525;
 egoSteeringRatio = 18;
 egoMaxSteeringWheelAng = 3*pi;
 % Engine paramters
-egoAccMin = -10.0;  % m/s^2
+egoAccMin = -5.0;  % m/s^2
 egoAccMax = 5.0;    % m/s^2
 egoSteerAngMin = -egoMaxSteeringWheelAng/egoSteeringRatio; %rad
 egoSteerAngMax = egoMaxSteeringWheelAng/egoSteeringRatio;  %rad
@@ -41,10 +41,19 @@ SenseResolution = 0.1;
 XSenseRangeArrSize = (2*XSenseRange/SenseResolution)+1;YSenseRangeArrSize = (2*YSenseRange/SenseResolution)+1;
 ReachableSet_MaxVertices = 200;
 %% Safe Reachable Set Generation
+% Polygon Generation
+Dmax = 3; gamma = 0.5;inflexPoint = 0.0;
+inflationFactor = 1.1;
+% Safe set parameters
 RiskMaxValue = 100; RiskValueThreshold = 15;
 eetaRoad = 5;
+% Reachable set parameters
 ReachableSetCurveResolution = 0.1;
 %% Controller parameters
+% Behavior planning parameters
+distOvertakeTrigger = 5; distSafeOvertakeZone = 5;
+distSafeLaneKeep = 10;
+abortTrigger = 0;
 dt = .05;
 tf = 2.0;
 v_des = 8; %m/s %30km\h
@@ -56,7 +65,7 @@ PredHor = 10;
 CntrlHor = 10;
 nx = 4; ny = 4; nu = 2;
 obstcl_ellip_order = 6;
-inflation_factor = 1.0;
+inflationFactorMpcOA = 1.15;
 
 mpc_planner = nlmpc(nx,ny,nu);
 mpc_planner.Ts = controllerSampleTime;
@@ -83,10 +92,10 @@ mpc_planner.ManipulatedVariables(2).Max = egoSteerAngMax;
 %                                        repmat([10 10 0 0],round(PredHor/4)-1, 1);...
 %                                        repmat([20 20 0 0],round(PredHor/4)-1, 1);...
 %                                        50 50 5 10];
-mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],PredHor/2, 1);
-                                       repmat([5 10 0 5],round(PredHor/4)-1, 1);...
+mpc_planner.Weights.OutputVariables = [repmat([0 5 10 10],PredHor/2, 1);
+                                       repmat([0 10 0 10],round(PredHor/4)-1, 1);...
                                        repmat([10 10 10 10],round(PredHor/4)-1, 1);...
-                                       10 50 50 30];
+                                       0 50 50 30];
 % mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],2, 1);
 %                                        repmat([5 10 0 10],2, 1);
 %                                        [50 50 50 10]];
