@@ -1,5 +1,5 @@
 function plot_all(XSenseRange, YSenseRange, SenseResolution,egoVehLength, egoVehWidth,...
-    VehFdbk_ISO, ActorsEgo, Lanes, npcVehPgons, safeSetEgo, safeRiskMapEgo, reachableSetEgo, SRSetEgo, XPredictedWorld,XmpcRefWorld, MVPredictedWorld, ReferenceGoal, ellip_coeff)
+    VehFdbk_ISO, ActorsEgo, LanesEgo, npcVehPgons, safeSetEgo, safeRiskMapEgo, reachableSetEgo, SRSetEgo, XPredictedWorld,XmpcRefWorld, MVPredictedWorld, ReferenceGoal, ellip_coeff)
 %PLOT_ALL Summary of this function goes here
 %   Detailed explanation goes here
 figure(1);
@@ -32,8 +32,8 @@ pg1 = plot(egoVehPgon);
 pg1.EdgeColor = 'blue';
 
 %% Plot Lane Boundaries %%
-for i = 1:Lanes.NumLaneBoundaries
-    plot(Lanes.LaneBoundaries(i,1).Coordinates(:,1), Lanes.LaneBoundaries(i,1).Coordinates(:,2), '-')
+for i = 1:LanesEgo.NumLaneBoundaries
+    plot(LanesEgo.LaneBoundaries(i,1).Coordinates(:,1), LanesEgo.LaneBoundaries(i,1).Coordinates(:,2), '-')
 end
 
 %% Plot NPCs %%

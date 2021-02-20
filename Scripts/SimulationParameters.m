@@ -51,7 +51,7 @@ eetaRoad = 5;
 ReachableSetCurveResolution = 0.1;
 %% Controller parameters
 % Behavior planning parameters
-distOvertakeTrigger = 5; distSafeOvertakeZone = 5;
+distOvertakeTrigger = 5; distSafeOvertakeZone = 10;
 distSafeLaneKeep = 10;
 abortTrigger = 0;
 dt = .05;
@@ -62,7 +62,7 @@ t=0;
 %MPC Parameters
 T_horizon = tf;
 PredHor = 10;
-CntrlHor = 10;
+CntrlHor = PredHor;
 nx = 4; ny = 4; nu = 2;
 obstcl_ellip_order = 6;
 inflationFactorMpcOA = 1.15;
@@ -92,9 +92,9 @@ mpc_planner.ManipulatedVariables(2).Max = egoSteerAngMax;
 %                                        repmat([10 10 0 0],round(PredHor/4)-1, 1);...
 %                                        repmat([20 20 0 0],round(PredHor/4)-1, 1);...
 %                                        50 50 5 10];
-mpc_planner.Weights.OutputVariables = [repmat([0 5 10 10],PredHor/2, 1);
-                                       repmat([0 10 0 10],round(PredHor/4)-1, 1);...
-                                       repmat([10 10 10 10],round(PredHor/4)-1, 1);...
+mpc_planner.Weights.OutputVariables = [repmat([0 5 20 10],PredHor/2, 1);
+                                       repmat([0 10 20 10],round(PredHor/4)-1, 1);...
+                                       repmat([10 20 50 10],round(PredHor/4)-1, 1);...
                                        0 50 50 30];
 % mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],2, 1);
 %                                        repmat([5 10 0 10],2, 1);
