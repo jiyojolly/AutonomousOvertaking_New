@@ -1,4 +1,4 @@
-function cineq = constraint_obstcl_avoid(X,U,e,data, ellip_coeff)
+function cineq = constraint_obstcl_avoid(X,U,e,data, ellip_coeff,L,l_F)
     
     p = data.PredictionHorizon;
     cineq = zeros(p,1);

@@ -42,7 +42,7 @@ XSenseRangeArrSize = (2*XSenseRange/SenseResolution)+1;YSenseRangeArrSize = (2*Y
 ReachableSet_MaxVertices = 200;
 %% Safe Reachable Set Generation
 % Polygon Generation
-Dmax = 3; gamma = 0.5;inflexPoint = 0.0;
+Dmax = 10; gamma = 0.1;inflexPoint = 0.0;
 inflationFactor = 1.1;
 % Safe set parameters
 RiskMaxValue = 100; RiskValueThreshold = 15;
@@ -51,12 +51,12 @@ eetaRoad = 5;
 ReachableSetCurveResolution = 0.1;
 %% Controller parameters
 % Behavior planning parameters
-distOvertakeTrigger = 5; distSafeOvertakeZone = 10;
+distOvertakeTrigger = 10; distSafeOvertakeZone = 10;
 distSafeLaneKeep = 10;
 abortTrigger = 0;
-dt = .05;
-tf = 2.0;
-v_des = 15; %m/s %30km\h
+dt = .01;
+tf = 1.0;
+v_des = 10; %m/s %30km\h
 controllerSampleTime = 0.1;
 t=0;
 %MPC Parameters
@@ -67,13 +67,17 @@ nx = 4; ny = 4; nu = 2;
 obstcl_ellip_order = 6;
 inflationFactorMpcOA = 1.15;
 
+xValidateFcns = [2 0 -pi/2 0.3]';
+uValidateFcns = [0.4 0.0]';
+ellipCoeffValidateFcns = [2 2 2 2 2 obstcl_ellip_order];
+
 mpc_planner = nlmpc(nx,ny,nu);
 mpc_planner.Ts = controllerSampleTime;
 mpc_planner.PredictionHorizon = PredHor;
 mpc_planner.ControlHorizon = CntrlHor;
-mpc_planner.Model.StateFcn = @(x,u,params) vkinematicmodel_bicycle(t,x,u,L,l_F);
+mpc_planner.Model.StateFcn = "vkinematicmodel_bicycleWrapper";
 mpc_planner.Model.IsContinuousTime = true;
-mpc_planner.Model.NumberOfParameters = 1;
+mpc_planner.Model.NumberOfParameters = 3;
 mpc_planner.Optimization.CustomIneqConFcn = "constraint_obstcl_avoid";
 % mpc_planner.Jacobian.CustomIneqConFcn = "constraint_obstcl_avoid_jacobian";
 
@@ -94,7 +98,7 @@ mpc_planner.ManipulatedVariables(2).Max = egoSteerAngMax;
 %                                        50 50 5 10];
 mpc_planner.Weights.OutputVariables = [repmat([0 5 20 10],PredHor/2, 1);
                                        repmat([0 10 20 10],round(PredHor/4)-1, 1);...
-                                       repmat([10 20 50 10],round(PredHor/4)-1, 1);...
+                                       repmat([0 20 50 10],round(PredHor/4)-1, 1);...
                                        0 50 50 30];
 % mpc_planner.Weights.OutputVariables = [repmat([5 5 0 5],2, 1);
 %                                        repmat([5 10 0 10],2, 1);
@@ -102,13 +106,12 @@ mpc_planner.Weights.OutputVariables = [repmat([0 5 20 10],PredHor/2, 1);
 
 mpc_planner.Weights.ManipulatedVariables = [5 50];
   
+createParameterBus(mpc_planner,['Controller/Control/MPC/Nonlinear MPC Controller'],'MPCparams',{ellipCoeffValidateFcns,L,l_F});
+validateFcns(mpc_planner, xValidateFcns, uValidateFcns, [], {ellipCoeffValidateFcns;L;l_F});
 
-ellipCoeffValidateFcns = [2 2 2 2 2 obstcl_ellip_order];
-createParameterBus(mpc_planner,['Controller/Control/MPC/Nonlinear MPC Controller'],'MPCparams',{ellipCoeffValidateFcns});
-xValidateFcns = [2 0 -pi/2 0.3];
-uValidateFcns = [0.4 0.0];
-validateFcns(mpc_planner, xValidateFcns, uValidateFcns, [], {ellipCoeffValidateFcns});
-
+% [coreData,onlineData] = getCodeGenerationData(mpc_planner,xValidateFcns,uValidateFcns,{ellipCoeffValidateFcns;L;l_F});
+% onlineData.ref = [0 0];
+% mexFcn = buildMEX(mpc_planner,"myController",coreData,onlineData);
 
 %% For Plotting
 plotSampleTime = 0.1;
