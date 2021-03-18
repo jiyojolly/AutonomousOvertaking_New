@@ -1,5 +1,5 @@
 function plot_all(XSenseRange, YSenseRange, SenseResolution,egoVehLength, egoVehWidth,...
-    VehFdbk_ISO, ActorsEgo, LanesEgo, npcVehPgons, safeSetEgo, safeRiskMapEgo, reachableSetEgo, SRSetEgo, XPredictedWorld,XmpcRefWorld, MVPredictedWorld, ReferenceGoal, ellip_coeff)
+    VehFdbk_ISO, ActorsEgo, LanesEgo, npcVehPgonsEgo, npcVehPgonsOrgEgo, safeSetEgo, safeRiskMapEgo, reachableSetEgo, SRSetEgo, XPredictedWorld,XmpcRefWorld, MVPredictedWorld, ReferenceGoal, ellip_coeff)
 %PLOT_ALL Summary of this function goes here
 %   Detailed explanation goes here
 figure(1);
@@ -12,7 +12,7 @@ hold on;
 %% Plot Sets
 
 % Plot Safe Set
-plot(safeSetEgo(:,1), safeSetEgo(:,2), '.', 'Color', '#FFFFE0');
+plot(safeSetEgo(:,1), safeSetEgo(:,2), '.', 'Color', '#F2F3F4');
 
 % Plot Reachable Set
 pg = plot(polyshape(reachableSetEgo));
@@ -32,16 +32,23 @@ pg1 = plot(egoVehPgon);
 pg1.EdgeColor = 'blue';
 
 %% Plot Lane Boundaries %%
-for i = 1:LanesEgo.NumLaneBoundaries
+for i = 4:LanesEgo.NumLaneBoundaries-1
     plot(LanesEgo.LaneBoundaries(i,1).Coordinates(:,1), LanesEgo.LaneBoundaries(i,1).Coordinates(:,2), '-')
 end
 
 %% Plot NPCs %%
-for i = 1:npcVehPgons.NumVeh
-    npcVehPgon = polyshape(npcVehPgons.VehPgon(i,1).X(:,1),npcVehPgons.VehPgon(i,1).Y(:,1));
+for i = 1:npcVehPgonsEgo.NumVeh
+    npcVehPgon = polyshape(npcVehPgonsEgo.VehPgon(i,1).X(:,1),npcVehPgonsEgo.VehPgon(i,1).Y(:,1));
     pg2 = plot(npcVehPgon);
     pg2.EdgeColor = 'red';
     pg2.FaceColor = 'none';
+end
+
+for i = 1:npcVehPgonsOrgEgo.NumVeh
+    npcVehPgon = polyshape(npcVehPgonsOrgEgo.VehPgon(i,1).X(:,1),npcVehPgonsOrgEgo.VehPgon(i,1).Y(:,1));
+    pg2 = plot(npcVehPgon);
+    pg2.EdgeColor = 'red';
+    pg2.FaceColor = 'red';
 end
 
 n=ellip_coeff(6);
@@ -66,7 +73,7 @@ for i = 1:size(XPredictedWorld, 1)
 end
 %% Set Figure
 axis auto;
-axis([-XSenseRange,XSenseRange,-YSenseRange/2,YSenseRange]);
+axis([-XSenseRange*2,XSenseRange*2,-YSenseRange,YSenseRange]);
 
 %% Plot 3d Map
 % hold off;

@@ -13,13 +13,13 @@ egoVehWheelbase = egoVehcenterToFront + egoVehcenterToRear;
 egoVehicleDims = vehicleDimensions(egoVehLength,egoVehWidth,egoVehHeight, ...
     'FrontOverhang',egoVehfrontOverhang,'RearOverhang',egoVehrearOverhang);
 % Wheelbase
-L = 3.705;
+L = 3.705;  
 l_F = 1.2525;
 %Steering Parameters
 egoSteeringRatio = 18;
 egoMaxSteeringWheelAng = 3*pi;
 % Engine paramters
-egoAccMin = -5.0;  % m/s^2
+egoAccMin = -10.0;  % m/s^2
 egoAccMax = 5.0;    % m/s^2
 egoSteerAngMin = -egoMaxSteeringWheelAng/egoSteeringRatio; %rad
 egoSteerAngMax = egoMaxSteeringWheelAng/egoSteeringRatio;  %rad
@@ -42,8 +42,8 @@ XSenseRangeArrSize = (2*XSenseRange/SenseResolution)+1;YSenseRangeArrSize = (2*Y
 ReachableSet_MaxVertices = 200;
 %% Safe Reachable Set Generation
 % Polygon Generation
-Dmax = 10; gamma = 0.1;inflexPoint = 0.0;
-inflationFactor = 1.1;
+d0VelVertex = 9; TfVelVertex = 3; gammaVelVertex = 0.1;
+inflationFactor = 1.21;
 % Safe set parameters
 RiskMaxValue = 100; RiskValueThreshold = 15;
 eetaRoad = 5;
@@ -65,7 +65,7 @@ PredHor = 10;
 CntrlHor = PredHor;
 nx = 4; ny = 4; nu = 2;
 obstcl_ellip_order = 6;
-inflationFactorMpcOA = 1.15;
+inflationFactorMpcOA = 1.2;
 
 xValidateFcns = [2 0 -pi/2 0.3]';
 uValidateFcns = [0.4 0.0]';

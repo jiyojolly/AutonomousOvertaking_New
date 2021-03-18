@@ -3,7 +3,8 @@ function URoad = getRoadPotential(X, Y, lanes, eetaRoad)
 %   Detailed explanation goes here
 
 URoad = zeros(size(X));
-for i = [1 7]
+selectedLanes = [4 length(lanes)-1];
+for i = selectedLanes
     laneHeadingAngle = -deg2rad(lanes(i).HeadingAngle);
 %     laneHeadingAngle = deg2rad(45);
 %     lane1X = lanes(i).Coordinates(:,1);
@@ -17,10 +18,10 @@ for i = [1 7]
     URoad = URoad + 0.5*eetaRoad*(1./(sin(laneHeadingAngle)*(X - lanes(i).Coordinates(200,1)) +...
                                       cos(laneHeadingAngle)*(Y - lanes(i).Coordinates(200,2))));
     
-    if i == 1
+    if i == selectedLanes(1)
         mask1 = (sin(laneHeadingAngle).*X + cos(laneHeadingAngle).*Y) >...
                     (sin(laneHeadingAngle).*lanes(i).Coordinates(200,1) + cos(laneHeadingAngle).*lanes(i).Coordinates(200,2));
-    elseif i == 7
+    elseif i == selectedLanes(2)
         mask1 = (sin(laneHeadingAngle).*X + cos(laneHeadingAngle).*Y) <...
                     (sin(laneHeadingAngle).*lanes(i).Coordinates(200,1) + cos(laneHeadingAngle).*lanes(i).Coordinates(200,2));
     end
