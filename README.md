@@ -15,6 +15,9 @@ predictive controller developed using MATLAB. In every tested scenario, the prop
 planning and control paradigm was able to select the best course of action (maneuver)
 and execute the same without collisions with other nearby vehicles.
 
+## Proposed Architecture
+ ![Alt text](images/ProposedPipeline.svg?raw=true "Proposed Architecture") 
+
 ## Project Structure
 ```bash
 ├───Functions     // All MATLAB functions that are used for planning and control scheme 
@@ -28,7 +31,10 @@ and execute the same without collisions with other nearby vehicles.
     ├───AOTDataDictionary.sldd     // Data dictionary
 └───Work
 ```   
- ## Results
+
+
+
+## Results
  ![Alt text](results/Abort_TopView.svg?raw=true "Title") 
 
 
