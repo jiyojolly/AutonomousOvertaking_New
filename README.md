@@ -16,7 +16,7 @@ planning and control paradigm was able to select the best course of action (mane
 and execute the same without collisions with other nearby vehicles.
 
 ## Proposed Architecture
- ![Alt text](images/ProposedPipeline.svg?raw=true "Proposed Architecture"){:width="50%"} 
+ ![Alt text](images/ProposedPipeline.svg?raw=true "Proposed Architecture" = 250x) 
 
 ## Project Structure
 ```bash
