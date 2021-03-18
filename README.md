@@ -28,8 +28,7 @@ and execute the same without collisions with other nearby vehicles.
     ├───AOTDataDictionary.sldd     // Data dictionary
 └───Work
 ```   
- ##
- 
-  
+ ## Results
+ ![Alt text](results/Abort_TopView.svg?raw=true "Title") 
 
 
